@@ -451,8 +451,8 @@ ng.module('smart-table')
                 link: function (scope, element, attr, table) {
 
                     var inputs = element.find('input');
-                    var inputBefore = element(inputs[0]);
-                    var inputAfter = element(inputs[1]);
+                    var inputBefore = ng.element(inputs[0]);
+                    var inputAfter = ng.element(inputs[1]);
                     var predicateName = attr.predicate;
 
 
