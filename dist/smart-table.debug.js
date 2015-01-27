@@ -10,6 +10,23 @@ ng.module('smart-table', []).run(['$templateCache', function ($templateCache) {
         '<div class="pagination" ng-if="pages.length >= 2"><ul class="pagination">' +
         '<li ng-repeat="page in pages" ng-class="{active: page==currentPage}"><a ng-click="selectPage(page)">{{page}}</a></li>' +
         '</ul></div>');
+    $templateCache.put('template/smart-table/stDateRange.html',
+        '<div class="input-group">' +
+        '        <label style="display: inline-block; width:44px;">after</label>' +
+        '        <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="after" is-open="isAfterOpen"' +
+        '                                 close-text="Close" style="display: inline-block; width: 100px;"/>' +
+        '        <span class="input-group-btn" style="display: inline-block;"> ' +
+        '                <button type="button" class="btn btn-default" ng-click="openAfter($event)"><i' +
+        '                                                                        class="glyphicon glyphicon-calendar"></i></button>' +
+        '                </span>' +
+        '</div>' +
+        '<div class="input-group">' +
+        '        <label style="display: inline-block; width:44px;">before</label>' +
+        '        <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="before" is-open="isBeforeOpen" close-text="Close" style="display: inline-block; width: 100px;"/>' +
+        '        <span class="input-group-btn" style="display: inline-block;"> ' +
+        '            <button type="button" class="btn btn-default" ng-click="openBefore($event)"><i class="glyphicon glyphicon-calendar"></i></button>' +
+        '        </span>' +
+        '</div>');
 }]);
 
 
@@ -420,5 +437,65 @@ ng.module('smart-table')
             }
         };
     });
+ng.module('smart-table')
+    .directive('stDateRange', ['$timeout', function ($timeout) {
+            return {
+                restrict: 'E',
+                require: '^stTable',
+                scope: {
+                    before: '=',
+                    after: '='
+                },
+                templateUrl: 'template/smart-table/stDateRange.html',
 
+                link: function (scope, element, attr, table) {
+
+                    var inputs = element.find('input');
+                    var inputBefore = element(inputs[0]);
+                    var inputAfter = element(inputs[1]);
+                    var predicateName = attr.predicate;
+
+
+                    [inputBefore, inputAfter].forEach(function (input) {
+
+                        input.bind('blur', function () {
+
+
+                            var query = {};
+
+                            if (!scope.isBeforeOpen && !scope.isAfterOpen) {
+
+                                if (scope.before) {
+                                    query.before = scope.before;
+                                }
+
+                                if (scope.after) {
+                                    query.after = scope.after;
+                                }
+
+                                scope.$apply(function () {
+                                    table.search(query, predicateName);
+                                });
+                            }
+                        });
+                    });
+
+                    function open(before) {
+                        return function ($event) {
+                            $event.preventDefault();
+                            $event.stopPropagation();
+
+                            if (before) {
+                                scope.isBeforeOpen = true;
+                            } else {
+                                scope.isAfterOpen = true;
+                            }
+                        };
+                    }
+
+                    scope.openBefore = open(true);
+                    scope.openAfter = open();
+                }
+            };
+        }]);
 })(angular);
