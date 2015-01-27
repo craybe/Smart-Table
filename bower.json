@@ -1,11 +1,11 @@
 {
-    "name": "smart-table",
+    "name": "smart-table-craybe",
     "version": "1.4.8",
-    "homepage": "https://github.com/lorenzofox3/Smart-Table",
+    "homepage": "https://github.com/craybe/Smart-Table",
     "authors": [
         "lorenzofox3 <laurent34azerty@gmail.com>"
     ],
-    "description": "table module for angular",
+    "description": "table module for angular forked with additional date filter",
     "main": "dist/smart-table.min.js",
     "keywords": [
         "smart-table",
